@@ -30,3 +30,17 @@ it('handle transformation with different units', async function () {
     'a{ width: max(10%, min(2px, 4rem)); }'
   )
 })
+
+it('transform only function with 3 paramters', async function () {
+    await run(
+        'a{ width: clamp(10%, 2px, 4rem);\nheight: clamp(10px, 20px, 30px, 40px); }',
+        'a{ width: max(10%, min(2px, 4rem));\nheight: clamp(10px, 20px, 30px, 40px); }'
+      ) 
+})
+
+it('transform only clamp function', async function () {
+    await run(
+        'a{ width: clamp(10%, 2px, 4rem);\nheight: calc(10px + 100%); }',
+        'a{ width: max(10%, min(2px, 4rem));\nheight: calc(10px + 100%); }'
+      ) 
+})

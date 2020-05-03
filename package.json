@@ -38,7 +38,9 @@
     "test": "jest && eslint-ci *.js"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage/"
   },
   "eslintConfig": {
     "extends": "eslint-config-postcss/es5",
