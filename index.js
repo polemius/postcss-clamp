@@ -11,19 +11,24 @@ module.exports = postcss.plugin('postcss-clamp', function (opts) {
       valueParser(decl.value).walk(function (node) {
         var nodes = node.nodes
         if (
-          node.type === 'function' &&
-            node.value === 'clamp' &&
-            nodes.length === 5
+          node.type !== 'function' ||
+            node.value !== 'clamp' ||
+            nodes.length !== 5
         ) {
-          var firstValue = nodes[0].value
-          var secondValue = nodes[2].value
-          var thirdValue = nodes[4].value
-          decl.value = 'max(' +
-            firstValue + ', min(' +
-            secondValue + ', ' +
-            thirdValue + ')' +
-            ')'
+          return
         }
+        var firstValue = valueParser.stringify(nodes[0])
+        var secondValue = valueParser.stringify(nodes[2])
+        var thirdValue = valueParser.stringify(nodes[4])
+
+        decl.value = 'max(' +
+            firstValue +
+            ', min(' +
+            secondValue +
+            ', ' +
+            thirdValue +
+            ')' +
+        ')'
       })
     })
   }

@@ -10,9 +10,23 @@ async function run (input, output, opts) {
   return result
 }
 
-it('transform clamp to min/max', function () {
-  run(
+it('handle simple transformation (only values)', async function () {
+  await run(
     'a{ width: clamp(10px, 64px, 80px); }',
     'a{ width: max(10px, min(64px, 80px)); }'
+  )
+})
+
+it('handle transformation with functions', async function () {
+  await run(
+    'a{ width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
+    'a{ width: max(calc(100% - 10px), min(min(10px, 100%), max(40px, 4em))); }'
+  )
+})
+
+it('handle transformation with different units', async function () {
+  await run(
+    'a{ width: clamp(10%, 2px, 4rem); }',
+    'a{ width: max(10%, min(2px, 4rem)); }'
   )
 })
