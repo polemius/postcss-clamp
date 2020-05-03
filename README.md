@@ -4,39 +4,12 @@
 [PostCSS] plugin to transform `clamp()` to combination of `min/max`.
 
 [PostCSS]:    https://github.com/postcss/postcss
-[ci-img]:     https://travis-ci.org/polemius/postcss-clamp.svg
-[ci]:         https://travis-ci.org/polemius/postcss-clamp
+[ci-img]:     https://travis-ci.com/polemius/postcss-clamp.svg?branch=master
+[ci]:         https://travis-ci.com/polemius/postcss-clamp
 [cov-img]: https://codecov.io/github/polemius/postcss-clamp/coverage.svg?branch=master
 [cov]:        https://codecov.io/github/polemius/postcss-clamp?branch=master
 
-
-## Instalation
-
-```
-$ npm install postcss-clamp
-```
-
-## Usage
-
-The plugin make all colors more bright.
-
-```js
-// dependencies
-var fs = require("fs")
-var postcss = require("postcss")
-var colorRgbaFallback = require("postcss-clamp")
-
-// css to be processed
-var css = fs.readFileSync("input.css", "utf8")
-
-// process css
-var output = postcss()
-  .use(colorRgbaFallback())
-  .process(css)
-  .css
-```
-
-Using this `input.css`:
+This plugin transform this css:
 
 ```css
 .foo {
@@ -44,13 +17,41 @@ Using this `input.css`:
 }
 ```
 
-you will get:
+into this:
 
 ```css
 .foo {
-  width: width: max(10px, min(64px, 80px));
+  width: max(10px, min(64px, 80px));
 }
 ```
+
+[!['Can I use' table](https://caniuse.bitsofco.de/image/css-math-functions.png)](https://caniuse.com/#feat=css-math-functions)
+
+## Instalation
+
+```bash
+$ npm install postcss-clamp --save-dev
+or
+$ yarn add --dev postcss-clamp
+```
+
+## Usage
+
+Use [PostCSS Clamp] as a [PostCSS] plugin:
+
+```js
+const postcss = require('postcss');
+const postcssClamp = require('postcss-clamp');
+
+postcss([
+  postcssClamp()
+]).process(YOUR_CSS /*, processOptions */);
+```
+
+[PostCSS Clamp] runs in all Node environments, with special instructions for:
+
+| [Node](INSTALL.md#node) | [PostCSS CLI](INSTALL.md#postcss-cli) | [Webpack](INSTALL.md#webpack) | [Create React App](INSTALL.md#create-react-app) | [Gulp](INSTALL.md#gulp) | [Grunt](INSTALL.md#grunt) |
+| --- | --- | --- | --- | --- | --- |
 
 See [PostCSS] docs for examples for your environment.
 
@@ -58,3 +59,5 @@ See [PostCSS] docs for examples for your environment.
 
 See [LICENSE](LICENSE)
 
+[PostCSS]: https://github.com/postcss/postcss
+[PostCSS Clamp]: https://github.com/polemius/postcss-clamp
