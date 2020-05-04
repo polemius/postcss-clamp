@@ -13,7 +13,7 @@ This plugin transform this css:
 
 ```css
 .foo {
-  width: clamp(10px, 64px, 80px);
+  width: clamp(10px, 4em, 80px);
 }
 ```
 
@@ -21,7 +21,7 @@ into this:
 
 ```css
 .foo {
-  width: max(10px, min(64px, 80px));
+  width: max(10px, min(4em, 80px));
 }
 ```
 
