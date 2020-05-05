@@ -20,7 +20,7 @@ const postcss = require('postcss');
 const postcssClamp = require('postcss-clamp');
 
 postcss([
-  postcssClamp()
+  postcssClamp(/* pluginOptions */)
 ]).process(YOUR_CSS /*, processOptions */);
 ```
 
@@ -39,7 +39,7 @@ const postcssClamp = require('postcss-clamp');
 
 module.exports = {
   plugins: [
-    postcssClamp()
+    postcssClamp(/* pluginOptions */)
   ]
 }
 ```
@@ -68,7 +68,7 @@ module.exports = {
           { loader: 'postcss-loader', options: {
             ident: 'postcss',
             plugins: () => [
-              postcssClamp()
+              postcssClamp(/* pluginOptions */)
             ]
           } }
         ]
@@ -95,7 +95,7 @@ const postcssClamp = require('postcss-clamp');
 
 module.exports = config => reactAppRewirePostcss(config, {
   plugins: () => [
-    postcssClamp()
+    postcssClamp(/* pluginOptions */)
   ]
 });
 ```
@@ -116,7 +116,7 @@ const postcssClamp = require('postcss-clamp');
 
 gulp.task('css', () => gulp.src('./src/*.css').pipe(
   postcss([
-    postcssClamp()
+    postcssClamp(/* pluginOptions */)
   ])
 ).pipe(
   gulp.dest('.')
@@ -142,7 +142,7 @@ grunt.initConfig({
   postcss: {
     options: {
       use: [
-       postcssClamp()
+       postcssClamp(/* pluginOptions */)
       ]
     },
     dist: {

@@ -25,6 +25,20 @@ into this:
 }
 ```
 
+Or with enabled options `precalculate`:
+
+```css
+.foo {
+  width: clamp(10em, 4px, 10px);
+}
+
+/* becomes */
+
+.foo {
+  width: max(10em, 14px);
+}
+```
+
 [!['Can I use' table](https://caniuse.bitsofco.de/image/css-math-functions.png)](https://caniuse.com/#feat=css-math-functions)
 
 ## Instalation
@@ -44,7 +58,7 @@ const postcss = require('postcss');
 const postcssClamp = require('postcss-clamp');
 
 postcss([
-  postcssClamp()
+  postcssClamp(/* pluginOptions */)
 ]).process(YOUR_CSS /*, processOptions */);
 ```
 
@@ -54,6 +68,47 @@ postcss([
 | --- | --- | --- | --- | --- | --- |
 
 See [PostCSS] docs for examples for your environment.
+
+## Options
+
+### precalculate
+
+The `precalculate` option determines whether values with the same unit
+should be precalculated. By default, these are not precalculation.
+
+```js
+postcssColorHexAlpha({
+  precalculate: true
+});
+```
+
+The second and third value has the same unit (`px`):
+
+```css
+.foo {
+  width: clamp(10em, 4px, 10px);
+}
+
+/* becomes */
+
+.foo {
+  width: max(10em, 14px);
+}
+```
+
+Here all values have the same unit:
+
+```css
+.foo {
+  width: clamp(10px, 4px, 10px);
+}
+
+/* becomes */
+
+.foo {
+  width: 24px;
+}
+```
 
 ## LICENSE
 
