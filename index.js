@@ -2,7 +2,7 @@ let postcss = require('postcss')
 let valueParser = require('postcss-value-parser')
 
 function parseValue (value) {
-  let parsed = value.match(/([-\d\.]+)(.*)/)
+  let parsed = value.match(/([\d.-]+)(.*)/)
   if (!parsed || !parsed[1] || !parsed[2] || isNaN(parsed[1])) {
     return undefined
   }
@@ -26,7 +26,7 @@ module.exports = postcss.plugin('postcss-clamp', opts => {
 
   return function (css) {
     css.walkDecls(decl => {
-      if (!decl || decl.value.indexOf('clamp') === -1) {
+      if (!decl || !decl.value.includes('clamp')) {
         return
       }
       valueParser(decl.value).walk(node => {
