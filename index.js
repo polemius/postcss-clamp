@@ -1,4 +1,3 @@
-let postcss = require('postcss')
 let valueParser = require('postcss-value-parser')
 
 function parseValue (value) {
@@ -20,12 +19,13 @@ function compose (first, second, third) {
   return first
 }
 
-module.exports = postcss.plugin('postcss-clamp', opts => {
+module.exports = opts => {
   opts = opts || {}
   let precalculate = opts.precalculate ? Boolean(opts.precalculate) : false
 
-  return function (css) {
-    css.walkDecls(decl => {
+  return {
+    postcssPlugin: 'postcss-clamp',
+    Declaration (decl) {
       if (!decl || !decl.value.includes('clamp')) {
         return
       }
@@ -38,57 +38,53 @@ module.exports = postcss.plugin('postcss-clamp', opts => {
         ) {
           return
         }
-
         let first = nodes[0]
         let second = nodes[2]
         let third = nodes[4]
-
         let naive = compose(
           valueParser.stringify(first),
           valueParser.stringify(second),
           valueParser.stringify(third)
         )
-
-        if (!precalculate || second.type !== 'word' || third.type !== 'word') {
+        if (
+          !precalculate ||
+          second.type !== 'word' ||
+          third.type !== 'word'
+        ) {
           decl.value = naive
           return
         }
-
         let parsedSecond = parseValue(second.value)
         let parsedThird = parseValue(third.value)
-
         if (parsedSecond === undefined || parsedThird === undefined) {
           decl.value = naive
           return
         }
-
         let [secondValue, secondUnit] = parsedSecond
         let [thirdValue, thirdUnit] = parsedThird
-
         if (secondUnit !== thirdUnit) {
           decl.value = naive
           return
         }
-
         let parsedFirst = parseValue(first.value)
-
         if (parsedFirst === undefined) {
-          let secondThirdValue = `${ secondValue + thirdValue }${ secondUnit }`
+          let secondThirdValue =
+            `${ secondValue + thirdValue }${ secondUnit }`
           decl.value = compose(valueParser.stringify(first), secondThirdValue)
           return
         }
-
         let [firstValue, firstUnit] = parsedFirst
-
         if (firstUnit !== secondUnit) {
-          let secondThirdValue = `${ secondValue + thirdValue }${ secondUnit }`
+          let secondThirdValue =
+            `${ secondValue + thirdValue }${ secondUnit }`
           decl.value = compose(valueParser.stringify(first), secondThirdValue)
           return
         }
-
         decl.value =
           compose(`${ firstValue + secondValue + thirdValue }${ secondUnit }`)
       })
-    })
+    }
   }
-})
+}
+
+module.exports.postcss = true

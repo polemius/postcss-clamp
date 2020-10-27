@@ -15,7 +15,6 @@
   "author": "Ivan Menshykov <ivan.menshykov@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "postcss": "^7.0.29",
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
@@ -34,7 +33,11 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^19.0.1",
-    "jest": "^26.0.1"
+    "jest": "^26.0.1",
+    "postcss": "^8.1.1"
+  },
+  "peerDependencies": {
+    "postcss": "^8.1.1"
   },
   "scripts": {
     "test": "jest && eslint-ci *.js"

@@ -44,9 +44,9 @@ Or with enabled options `precalculate`:
 ## Instalation
 
 ```bash
-$ npm install postcss-clamp --save-dev
+$ npm install postcss postcss-clamp --save-dev
 or
-$ yarn add --dev postcss-clamp
+$ yarn add --dev postcss postcss-clamp
 ```
 
 ## Usage
