@@ -31,7 +31,7 @@ it('handle transformation with different units', async () => {
   )
 })
 
-it('transform only function with 3 paramters', async () => {
+it('transform only function with 3 parameters', async () => {
   await run(
     'a{ width: clamp(10%, 2px, 4rem);' +
     '\nheight: clamp(10px, 20px, 30px, 40px); }',
@@ -99,7 +99,7 @@ it('precalculate all values with the same unit (int and float values)',
     )
   })
 
-it('handle function with enalbe precalculation as third', async () => {
+it('handle function with enable precalculation as third', async () => {
   await run(
     'a{ width: clamp(10px, 2px, calc(10px + 100%)); }',
     'a{ width: max(10px, min(2px, calc(10px + 100%))); }',
@@ -107,7 +107,7 @@ it('handle function with enalbe precalculation as third', async () => {
   )
 })
 
-it('handle function with enalbe precalculation as second', async () => {
+it('handle function with enable precalculation as second', async () => {
   await run(
     'a{ width: clamp(10px, calc(10px + 100%), 2px); }',
     'a{ width: max(10px, min(calc(10px + 100%), 2px)); }',
@@ -115,7 +115,7 @@ it('handle function with enalbe precalculation as second', async () => {
   )
 })
 
-it('handle function with enalbe precalculation as first', async () => {
+it('handle function with enable precalculation as first', async () => {
   await run(
     'a{ width: clamp(calc(10px + 100%), 10px, 2px); }',
     'a{ width: max(calc(10px + 100%), 12px); }',
@@ -123,7 +123,7 @@ it('handle function with enalbe precalculation as first', async () => {
   )
 })
 
-it('handle function with enalbe precalculation as all', async () => {
+it('handle function with enable precalculation as all', async () => {
   await run(
     'a{ width: clamp(calc(10px + 100%), calc(10rem + 200%), 10px); }',
     'a{ width: max(calc(10px + 100%), min(calc(10rem + 200%), 10px)); }',
