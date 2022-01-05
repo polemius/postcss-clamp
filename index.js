@@ -19,9 +19,18 @@ function compose (first, second, third) {
   return first
 }
 
+function updateValue (declaration, value, preserve) {
+  if (preserve) {
+    declaration.cloneBefore({ value })
+  } else {
+    declaration.value = value
+  }
+}
+
 module.exports = opts => {
   opts = opts || {}
   let precalculate = opts.precalculate ? Boolean(opts.precalculate) : false
+  let preserve = opts.preserve ? Boolean(opts.preserve) : false
 
   return {
     postcssPlugin: 'postcss-clamp',
@@ -51,37 +60,61 @@ module.exports = opts => {
           second.type !== 'word' ||
           third.type !== 'word'
         ) {
-          decl.value = naive
+          updateValue(
+            decl,
+            naive,
+            preserve
+          )
           return
         }
         let parsedSecond = parseValue(second.value)
         let parsedThird = parseValue(third.value)
         if (parsedSecond === undefined || parsedThird === undefined) {
-          decl.value = naive
+          updateValue(
+            decl,
+            naive,
+            preserve
+          )
           return
         }
         let [secondValue, secondUnit] = parsedSecond
         let [thirdValue, thirdUnit] = parsedThird
         if (secondUnit !== thirdUnit) {
-          decl.value = naive
+          updateValue(
+            decl,
+            naive,
+            preserve
+          )
           return
         }
         let parsedFirst = parseValue(first.value)
         if (parsedFirst === undefined) {
           let secondThirdValue =
             `${ secondValue + thirdValue }${ secondUnit }`
-          decl.value = compose(valueParser.stringify(first), secondThirdValue)
+          updateValue(
+            decl,
+            compose(valueParser.stringify(first), secondThirdValue),
+            preserve
+          )
           return
         }
         let [firstValue, firstUnit] = parsedFirst
         if (firstUnit !== secondUnit) {
           let secondThirdValue =
             `${ secondValue + thirdValue }${ secondUnit }`
-          decl.value = compose(valueParser.stringify(first), secondThirdValue)
+          updateValue(
+            decl,
+            compose(valueParser.stringify(first), secondThirdValue),
+            preserve
+          )
           return
         }
-        decl.value =
-          compose(`${ firstValue + secondValue + thirdValue }${ secondUnit }`)
+
+        updateValue(
+          decl,
+          compose(`${ firstValue + secondValue + thirdValue }${ secondUnit }`),
+          preserve
+        )
       })
     }
   }

@@ -17,6 +17,14 @@ it('handle simple transformation (only values)', async () => {
   )
 })
 
+it('handle simple transformation (only values) with preserve', async () => {
+  await run(
+    'a{ width: clamp(10px, 64px, 80px); }',
+    'a{ width: max(10px, min(64px, 80px)); width: clamp(10px, 64px, 80px); }',
+    { preserve: true }
+  )
+})
+
 it('handle transformation with functions', async () => {
   await run(
     'a{ width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
@@ -24,10 +32,27 @@ it('handle transformation with functions', async () => {
   )
 })
 
+it('handle transformation with functions with preserve', async () => {
+  await run(
+    'a{ width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
+    'a{ width: max(calc(100% - 10px), min(min(10px, 100%), max(40px, 4em))); ' +
+    'width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
+    { preserve: true }
+  )
+})
+
 it('handle transformation with different units', async () => {
   await run(
     'a{ width: clamp(10%, 2px, 4rem); }',
     'a{ width: max(10%, min(2px, 4rem)); }'
+  )
+})
+
+it('handle transformation with different units and preserve', async () => {
+  await run(
+    'a{ width: clamp(10%, 2px, 4rem); }',
+    'a{ width: max(10%, min(2px, 4rem)); width: clamp(10%, 2px, 4rem); }',
+    { preserve: true }
   )
 })
 
@@ -71,6 +96,15 @@ it('precalculate second and third with the same unit (float and int values)',
       'a{ width: clamp(10%, 2.5px, 5px); }',
       'a{ width: max(10%, 7.5px); }',
       { precalculate: true }
+    )
+  })
+
+it('precalculate 2nd & 3rd with the same unit (float and int vals) & preserve',
+  async () => {
+    await run(
+      'a{ width: clamp(10%, 2.5px, 5px); }',
+      'a{ width: max(10%, 7.5px); width: clamp(10%, 2.5px, 5px); }',
+      { precalculate: true, preserve: true }
     )
   })
 
@@ -139,10 +173,26 @@ it('handle not valid values', async () => {
   )
 })
 
+it('handle not valid values with preserve', async () => {
+  await run(
+    'a{ width: clamp(a, b, c); }',
+    'a{ width: max(a, min(b, c)); width: clamp(a, b, c); }',
+    { precalculate: true, preserve: true }
+  )
+})
+
 it('handle not valid values mixed with valid', async () => {
   await run(
     'a{ width: clamp(a, 1px, 2em); }',
     'a{ width: max(a, min(1px, 2em)); }',
     { precalculate: true }
+  )
+})
+
+it('handle not valid values mixed with valid and preserve', async () => {
+  await run(
+    'a{ width: clamp(a, 1px, 2em); }',
+    'a{ width: max(a, min(1px, 2em)); width: clamp(a, 1px, 2em); }',
+    { precalculate: true, preserve: true }
   )
 })
