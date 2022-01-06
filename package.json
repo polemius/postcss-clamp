@@ -34,10 +34,10 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-unicorn": "^19.0.1",
     "jest": "^26.0.1",
-    "postcss": "^8.1.1"
+    "postcss": "^8.4.5"
   },
   "peerDependencies": {
-    "postcss": "^8.1.1"
+    "postcss": "^8.4.5"
   },
   "scripts": {
     "test": "jest && eslint-ci *.js"
