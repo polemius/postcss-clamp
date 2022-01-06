@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0
+
+* Add preserve option (Implemented by https://github.com/Antonio-Laguna)
+
 ## 2.0.0
 
 * Rewrite package to PostCSS 8 (#2)
