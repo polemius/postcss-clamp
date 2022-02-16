@@ -3,8 +3,9 @@ let postcss = require('postcss')
 let clamp = require('./')
 
 async function run (input, output, opts) {
-  let result = await postcss([clamp(opts)])
-    .process(input, { from: '/test.css' })
+  let result = await postcss([clamp(opts)]).process(input, {
+    from: '/test.css'
+  })
   expect(result.css).toEqual(output)
   expect(result.warnings()).toHaveLength(0)
   return result
@@ -36,7 +37,7 @@ it('handle transformation with functions with preserve', async () => {
   await run(
     'a{ width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
     'a{ width: max(calc(100% - 10px), min(min(10px, 100%), max(40px, 4em))); ' +
-    'width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
+      'width: clamp(calc(100% - 10px), min(10px, 100%), max(40px, 4em)); }',
     { preserve: true }
   )
 })
@@ -59,9 +60,9 @@ it('handle transformation with different units and preserve', async () => {
 it('transform only function with 3 parameters', async () => {
   await run(
     'a{ width: clamp(10%, 2px, 4rem);' +
-    '\nheight: clamp(10px, 20px, 30px, 40px); }',
+      '\nheight: clamp(10px, 20px, 30px, 40px); }',
     'a{ width: max(10%, min(2px, 4rem));' +
-    '\nheight: clamp(10px, 20px, 30px, 40px); }'
+      '\nheight: clamp(10px, 20px, 30px, 40px); }'
   )
 })
 
@@ -72,48 +73,40 @@ it('transform only clamp function', async () => {
   )
 })
 
-it('precalculate second and third with the same unit (int values)',
-  async () => {
-    await run(
-      'a{ width: clamp(10%, 2px, 5px); }',
-      'a{ width: max(10%, 7px); }',
-      { precalculate: true }
-    )
+it('precalculate second and third with the same unit (int values)', async () => {
+  await run('a{ width: clamp(10%, 2px, 5px); }', 'a{ width: max(10%, 7px); }', {
+    precalculate: true
   })
+})
 
-it('precalculate second and third with the same unit (float values)',
-  async () => {
-    await run(
-      'a{ width: clamp(10%, 2.5px, 5.1px); }',
-      'a{ width: max(10%, 7.6px); }',
-      { precalculate: true }
-    )
-  })
-
-it('precalculate second and third with the same unit (float and int values)',
-  async () => {
-    await run(
-      'a{ width: clamp(10%, 2.5px, 5px); }',
-      'a{ width: max(10%, 7.5px); }',
-      { precalculate: true }
-    )
-  })
-
-it('precalculate 2nd & 3rd with the same unit (float and int vals) & preserve',
-  async () => {
-    await run(
-      'a{ width: clamp(10%, 2.5px, 5px); }',
-      'a{ width: max(10%, 7.5px); width: clamp(10%, 2.5px, 5px); }',
-      { precalculate: true, preserve: true }
-    )
-  })
-
-it('precalculate all values with the same unit (int values)', async () => {
+it('precalculate second and third with the same unit (float values)', async () => {
   await run(
-    'a{ width: clamp(10px, 2px, 5px); }',
-    'a{ width: 17px; }',
+    'a{ width: clamp(10%, 2.5px, 5.1px); }',
+    'a{ width: max(10%, 7.6px); }',
     { precalculate: true }
   )
+})
+
+it('precalculate second and third with the same unit (float and int values)', async () => {
+  await run(
+    'a{ width: clamp(10%, 2.5px, 5px); }',
+    'a{ width: max(10%, 7.5px); }',
+    { precalculate: true }
+  )
+})
+
+it('precalculate 2nd & 3rd with the same unit (float and int vals) & preserve', async () => {
+  await run(
+    'a{ width: clamp(10%, 2.5px, 5px); }',
+    'a{ width: max(10%, 7.5px); width: clamp(10%, 2.5px, 5px); }',
+    { precalculate: true, preserve: true }
+  )
+})
+
+it('precalculate all values with the same unit (int values)', async () => {
+  await run('a{ width: clamp(10px, 2px, 5px); }', 'a{ width: 17px; }', {
+    precalculate: true
+  })
 })
 
 it('precalculate all values with the same unit (float values)', async () => {
@@ -124,14 +117,11 @@ it('precalculate all values with the same unit (float values)', async () => {
   )
 })
 
-it('precalculate all values with the same unit (int and float values)',
-  async () => {
-    await run(
-      'a{ width: clamp(10.4px, 2px, 5.9px); }',
-      'a{ width: 18.3px; }',
-      { precalculate: true }
-    )
+it('precalculate all values with the same unit (int and float values)', async () => {
+  await run('a{ width: clamp(10.4px, 2px, 5.9px); }', 'a{ width: 18.3px; }', {
+    precalculate: true
   })
+})
 
 it('handle function with enable precalculation as third', async () => {
   await run(
@@ -166,11 +156,9 @@ it('handle function with enable precalculation as all', async () => {
 })
 
 it('handle not valid values', async () => {
-  await run(
-    'a{ width: clamp(a, b, c); }',
-    'a{ width: max(a, min(b, c)); }',
-    { precalculate: true }
-  )
+  await run('a{ width: clamp(a, b, c); }', 'a{ width: max(a, min(b, c)); }', {
+    precalculate: true
+  })
 })
 
 it('handle not valid values with preserve', async () => {
@@ -194,5 +182,19 @@ it('handle not valid values mixed with valid and preserve', async () => {
     'a{ width: clamp(a, 1px, 2em); }',
     'a{ width: max(a, min(1px, 2em)); width: clamp(a, 1px, 2em); }',
     { precalculate: true, preserve: true }
+  )
+})
+
+it('handle complex values', async () => {
+  await run(
+    'a{ grid-template-columns: clamp(22rem, 40%, 32rem) minmax(0, 1fr); }',
+    'a{ grid-template-columns: max(22rem, min(40%, 32rem)) minmax(0, 1fr); }'
+  )
+})
+
+it('handle multiple complex values', async () => {
+  await run(
+    'a{ margin: clamp(1rem, 2%, 3rem) 4px clamp(5rem, 6%, 7rem) 8rem; }',
+    'a{ margin: max(1rem, min(2%, 3rem)) 4px max(5rem, min(6%, 7rem)) 8rem; }'
   )
 })

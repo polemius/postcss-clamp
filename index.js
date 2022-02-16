@@ -10,20 +10,39 @@ function parseValue (value) {
 
 function compose (first, second, third) {
   if (first && second && third) {
-    return `max(${ first }, min(${ second }, ${ third }))`
+    return `max(${first}, min(${second}, ${third}))`
   }
   if (first && second) {
-    return `max(${ first }, ${ second })`
+    return `max(${first}, ${second})`
   }
 
   return first
 }
 
 function updateValue (declaration, value, preserve) {
+  let newValue = value
+  let newValueAst = valueParser(value)
+  let valueAST = valueParser(declaration.value)
+
+  // Means clamp is not alone within the declaration
+  if (valueAST.nodes.length > 1) {
+    let clampIndex = valueAST.nodes.findIndex(
+      node => node.type === 'function' && node.value === 'clamp'
+    )
+
+    valueAST.nodes = [
+      ...valueAST.nodes.slice(0, clampIndex),
+      ...newValueAst.nodes,
+      ...valueAST.nodes.slice(clampIndex + 1)
+    ]
+
+    newValue = valueAST.toString()
+  }
+
   if (preserve) {
-    declaration.cloneBefore({ value })
+    declaration.cloneBefore({ value: newValue })
   } else {
-    declaration.value = value
+    declaration.value = newValue
   }
 }
 
@@ -42,8 +61,8 @@ module.exports = opts => {
         let nodes = node.nodes
         if (
           node.type !== 'function' ||
-            node.value !== 'clamp' ||
-            nodes.length !== 5
+          node.value !== 'clamp' ||
+          nodes.length !== 5
         ) {
           return
         }
@@ -55,42 +74,25 @@ module.exports = opts => {
           valueParser.stringify(second),
           valueParser.stringify(third)
         )
-        if (
-          !precalculate ||
-          second.type !== 'word' ||
-          third.type !== 'word'
-        ) {
-          updateValue(
-            decl,
-            naive,
-            preserve
-          )
+        if (!precalculate || second.type !== 'word' || third.type !== 'word') {
+          updateValue(decl, naive, preserve)
           return
         }
         let parsedSecond = parseValue(second.value)
         let parsedThird = parseValue(third.value)
         if (parsedSecond === undefined || parsedThird === undefined) {
-          updateValue(
-            decl,
-            naive,
-            preserve
-          )
+          updateValue(decl, naive, preserve)
           return
         }
         let [secondValue, secondUnit] = parsedSecond
         let [thirdValue, thirdUnit] = parsedThird
         if (secondUnit !== thirdUnit) {
-          updateValue(
-            decl,
-            naive,
-            preserve
-          )
+          updateValue(decl, naive, preserve)
           return
         }
         let parsedFirst = parseValue(first.value)
         if (parsedFirst === undefined) {
-          let secondThirdValue =
-            `${ secondValue + thirdValue }${ secondUnit }`
+          let secondThirdValue = `${secondValue + thirdValue}${secondUnit}`
           updateValue(
             decl,
             compose(valueParser.stringify(first), secondThirdValue),
@@ -100,8 +102,7 @@ module.exports = opts => {
         }
         let [firstValue, firstUnit] = parsedFirst
         if (firstUnit !== secondUnit) {
-          let secondThirdValue =
-            `${ secondValue + thirdValue }${ secondUnit }`
+          let secondThirdValue = `${secondValue + thirdValue}${secondUnit}`
           updateValue(
             decl,
             compose(valueParser.stringify(first), secondThirdValue),
@@ -112,7 +113,7 @@ module.exports = opts => {
 
         updateValue(
           decl,
-          compose(`${ firstValue + secondValue + thirdValue }${ secondUnit }`),
+          compose(`${firstValue + secondValue + thirdValue}${secondUnit}`),
           preserve
         )
       })
