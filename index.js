@@ -20,10 +20,29 @@ function compose (first, second, third) {
 }
 
 function updateValue (declaration, value, preserve) {
+  let newValue = value
+  let newValueAst = valueParser(value)
+  let valueAST = valueParser(declaration.value)
+
+  // Means clamp is not alone within the declaration
+  if (valueAST.nodes.length > 1) {
+    let clampIndex = valueAST.nodes.findIndex(
+      node => node.type === 'function' && node.value === 'clamp'
+    )
+
+    valueAST.nodes = [
+      ...valueAST.nodes.slice(0, clampIndex),
+      ...newValueAst.nodes,
+      ...valueAST.nodes.slice(clampIndex + 1)
+    ]
+
+    newValue = valueAST.toString()
+  }
+
   if (preserve) {
-    declaration.cloneBefore({ value })
+    declaration.cloneBefore({ value: newValue })
   } else {
-    declaration.value = value
+    declaration.value = newValue
   }
 }
 
