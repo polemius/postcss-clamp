@@ -184,3 +184,17 @@ it('handle not valid values mixed with valid and preserve', async () => {
     { precalculate: true, preserve: true }
   )
 })
+
+it('handle complex values', async () => {
+  await run(
+    'a{ grid-template-columns: clamp(22rem, 40%, 32rem) minmax(0, 1fr); }',
+    'a{ grid-template-columns: max(22rem, min(40%, 32rem)) minmax(0, 1fr); }'
+  )
+})
+
+it('handle multiple complex values', async () => {
+  await run(
+    'a{ margin: clamp(1rem, 2%, 3rem) 4px clamp(5rem, 6%, 7rem) 8rem; }',
+    'a{ margin: max(1rem, min(2%, 3rem)) 4px max(5rem, min(6%, 7rem)) 8rem; }'
+  )
+})
