@@ -1,6 +1,10 @@
 # Change Log
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.1.0
+
+* Improving clamp replacement (Implemented by https://github.com/Antonio-Laguna)
+
 ## 4.0.0
 
 * Fix bug that clamp polyfill doesn't work in grid-template context (Fix by https://github.com/Antonio-Laguna)

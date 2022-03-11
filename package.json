@@ -1,6 +1,6 @@
 {
   "name": "postcss-clamp",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "PostCSS plugin to transform clamp() to combination of min/max",
   "keywords": [
     "postcss",
